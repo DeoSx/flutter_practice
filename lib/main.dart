@@ -12,21 +12,26 @@ class MyApp extends StatelessWidget {
           appBar: AppBar(
             title: Text('test'),
           ),
-          body: NewsBox(
-            'Hello Wolrd',
-            'I learn flutter!',
-          )),
+          body: NewsBox('Hello Wolrd', 'I learn flutter!',
+              imageUrl: 'https://flutter.su/favicon.png', num: 0, like: false)),
     );
   }
 }
+
+// ignore: must_be_immutable
 
 class NewsBox extends StatelessWidget {
   final String _title;
   final String _text;
   String _imageUrl;
+  int _num;
+  bool _like;
 
-  NewsBox(this._title, this._text, {String imageUrl}) {
+  NewsBox(this._title, this._text,
+      {String imageUrl, int num = 0, bool like = false}) {
     _imageUrl = imageUrl;
+    _num = num;
+    _like = like;
   }
 
   @override
@@ -59,7 +64,8 @@ class NewsBox extends StatelessWidget {
                   ))
                 ],
               ),
-            ))
+            )),
+            NewsBoxFavorite(_num, _like)
           ],
         ),
       );
@@ -88,8 +94,53 @@ class NewsBox extends StatelessWidget {
                   ))
                 ],
               ),
-            ))
+            )),
+            NewsBoxFavorite(_num, _like)
           ],
         ));
+  }
+}
+
+class NewsBoxFavorite extends StatefulWidget {
+  final int _num;
+  final bool _like;
+
+  NewsBoxFavorite(this._num, this._like);
+
+  @override
+  createState() => NewsBoxFavoriteState(_num, _like);
+}
+
+class NewsBoxFavoriteState extends State<NewsBoxFavorite> {
+  int num;
+  bool like;
+
+  NewsBoxFavoriteState(this.num, this.like);
+
+  void pressButton() {
+    setState(() {
+      like = !like;
+
+      if (like)
+        num++;
+      else
+        num--;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          'In favorite $num',
+          textAlign: TextAlign.center,
+        ),
+        IconButton(
+            icon: Icon(like ? Icons.star : Icons.star_border,
+                size: 30.0, color: Colors.blue[500]),
+            onPressed: pressButton)
+      ],
+    );
   }
 }
